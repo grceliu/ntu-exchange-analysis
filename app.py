@@ -1,5 +1,6 @@
 import pandas as pd
 import plotly.express as px  # (version 4.7.0)
+import plotly.graph_objs as go
 import dash  # (version 1.12.0) pip install dash
 import dash_core_components as dcc
 import dash_html_components as html
@@ -12,6 +13,8 @@ app = dash.Dash(
 )
 app.title = "NTU exchange stats"
 server = app.server
+
+MAIN_COLOR = '#256ae5'
 
 # ------------------------------------------------------------------------------
 # Import and clean data (importing csv into pandas)
@@ -66,9 +69,9 @@ app.layout = html.Div(
                         html.Div(className="stats-card", children=[html.H1(id='num_schools'), html.P("個學校")]),
                     ]
                 ),
-                html.Div(className="pane", children=dcc.Graph(style={'height': '250px', 'width': '600px'}, id='hist_year', figure={}, responsive=True)),
-                html.Div(className="pane", children=dcc.Graph(style={'height': '250px', 'width': '600px'}, id='hist_country', figure={}, responsive=True)),
-                html.Div(className="pane", children=dcc.Graph(style={'height': '250px', 'width': '600px'}, id='hist_school', figure={}, responsive=True)),
+                html.Div(className="pane", children=dcc.Graph(style={'height': '100%', 'width': '100%', 'max-height': '250px', 'max-width': '600px'}, id='hist_year', figure={}, responsive=True, config={'displayModeBar': False})),
+                html.Div(className="pane", children=dcc.Graph(style={'height': '100%', 'width': '100%', 'max-height': '250px', 'max-width': '600px'}, id='hist_country', figure={}, responsive=True, config={'displayModeBar': False})),
+                html.Div(className="pane", children=dcc.Graph(style={'height': '100%', 'width': '100%', 'max-height': '250px', 'max-width': '600px'}, id='hist_school', figure={}, responsive=True, config={'displayModeBar': False})),
             ]
         )
 ])
@@ -96,16 +99,20 @@ def update_graph(slct_year, slct_department):
     num_countries = dff["國家"].nunique()
     num_schools = dff['學校'].nunique()
 
-    fig_year = px.histogram(dff, x="學年", title="{}歷年交換人數".format(slct_department), color_discrete_sequence=['#256ae5'])
-    fig_year.update_layout(title_x=0.5, title_y=0.95, margin_l=20, margin_r=20, margin_t=50, margin_b=10)
+    fig_year = px.histogram(dff, x="學年", title="{}歷年交換人數".format(slct_department), color_discrete_sequence=[MAIN_COLOR])
+    fig_year.update_layout(title_x=0.5, title_y=0.95, margin_l=20, margin_r=20, margin_t=35, margin_b=10)
+    fig_year.update_xaxes(fixedrange=True)
+    fig_year.update_yaxes(fixedrange=True)
 
-    fig_country = px.histogram(dff, x='國家', title="{}學生前往交換國家".format(slct_department), color_discrete_sequence=['#256ae5'])
-    fig_country.update_layout(title_x=0.5, title_y=0.95, margin_l=20, margin_r=20, margin_t=50)
-    fig_country.update_xaxes(tickangle=315, categoryorder="total descending")
+    fig_country = px.histogram(dff, x='國家', title="{}學生前往交換國家".format(slct_department), color_discrete_sequence=[MAIN_COLOR])
+    fig_country.update_layout(title_x=0.5, title_y=0.95, margin_l=20, margin_r=20, margin_t=35, margin_b=10)
+    fig_country.update_xaxes(tickangle=315, categoryorder="total descending", fixedrange=True)
+    fig_country.update_yaxes(fixedrange=True)
 
-    fig_school = px.histogram(dff, x='學校', title="{}學生前往交換學校".format(slct_department), color_discrete_sequence=['#256ae5'])
-    fig_school.update_layout(title_x=0.5, title_y=0.95, margin_l=20, margin_r=20, margin_t=50)
-    fig_school.update_xaxes(tickangle=315, categoryorder="total descending")
+    fig_school = px.histogram(dff, x='學校', title="{}學生前往交換學校".format(slct_department), color_discrete_sequence=[MAIN_COLOR])
+    fig_school.update_layout(title_x=0.5, title_y=0.95, margin_l=20, margin_r=20, margin_t=35, margin_b=10)
+    fig_school.update_xaxes(tickangle=315, categoryorder="total descending", fixedrange=True)
+    fig_school.update_yaxes(fixedrange=True)
 
     return one_sem_pct, num_students, num_countries, num_schools, fig_year, fig_country, fig_school
 

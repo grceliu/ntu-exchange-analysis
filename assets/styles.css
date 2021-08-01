@@ -12,6 +12,8 @@ p {
 }
 
 .pane{
+  height: 250px;
+  width: 600px;
   padding: 10px;
   justify-content: center;
 }
