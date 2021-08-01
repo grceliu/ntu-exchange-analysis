@@ -1,55 +1,14 @@
+:root {
+  --main-color: #256ae5;
+  --pane-width: 600px;
+}
+
 body{
   font-family: Verdana ;
 }
 
-/* slider color formatting */
-.rc-slider-track {
-  background-color: #256ae5;
-}
-.rc-slider-handle {
-  border: solid 2px #256ae5;
-  background-color: #fff;
-}
-.rc-slider-handle:focus {
-  border-color: #256ae5;
-  box-shadow: 0 0 0 5px #256ae5;
-  outline: none;
-}
-.rc-slider-handle:hover {
-  border-color: #256ae5;
-}
-.rc-slider-handle:active {
-  border-color: #256ae5;
-  box-shadow: 0 0 5px #256ae5;
-  cursor: -webkit-grabbing;
-  cursor: grabbing;
-}
-.rc-slider-handle-click-focused:focus {
-  border-color: #256ae5;
-  box-shadow: unset;
-}
-
-.rc-slider-dot-active {
-  border-color: #256ae5;
-}
-
-section{
-    display: grid;
-    grid-template-columns: 1fr 1fr; /* 2 columns */
-    grid-template-rows: auto auto;
-    grid-auto-flow: row; /* fill in by row */
-    height: 20%;
-}
-
-.sum_stat {
-  border-radius: 5px;
-  background-color: #f9f9f9;
-  margin: 10px;
-  padding: 15px;
-  position: relative;
-  box-shadow: 2px 2px 2px lightgrey;
-  text-align: center;
-  font-size: 30px;
+p {
+  font-size: .8rem;
 }
 
 .pane{
@@ -57,6 +16,57 @@ section{
   justify-content: center;
 }
 
-p {
-  font-size: 20px;
+.pane-grid {
+    display: grid;
+    justify-content: center;
+    gap: 2rem 2rem;
+    grid-template-columns: repeat(auto-fill, var(--pane-width));
+}
+
+.stats-card {
+  border-radius: .5rem;
+  background-color: #f9f9f9;
+  box-shadow: 2px 2px 2px lightgrey;
+  text-align: center;
+  font-size: 1.2rem;
+}
+
+.stats-grid {
+    height: 250px;
+    width: 600px;
+    display: grid;
+    justify-content: center;
+    gap: 1rem 1rem;
+    grid-template-columns: 1fr 1fr; /* 2 columns */
+}
+
+/* slider color formatting */
+.rc-slider-track {
+  background-color: var(--main-color);
+}
+.rc-slider-handle {
+  border: solid 2px var(--main-color);
+  background-color: #fff;
+}
+.rc-slider-handle:focus {
+  border-color: var(--main-color);
+  box-shadow: 0 0 0 5px var(--main-color);
+  outline: none;
+}
+.rc-slider-handle:hover {
+  border-color: var(--main-color);
+}
+.rc-slider-handle:active {
+  border-color: var(--main-color);
+  box-shadow: 0 0 5px var(--main-color);
+  cursor: -webkit-grabbing;
+  cursor: grabbing;
+}
+.rc-slider-handle-click-focused:focus {
+  border-color: var(--main-color);
+  box-shadow: unset;
+}
+
+.rc-slider-dot-active {
+  border-color: var(--main-color);
 }

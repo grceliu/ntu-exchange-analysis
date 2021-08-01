@@ -4,9 +4,15 @@ import dash  # (version 1.12.0) pip install dash
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
-app = dash.Dash(__name__)
+
+app = dash.Dash(
+    __name__,
+    meta_tags=[{"name": "viewport", "content": "width=device-width, initial-scale=1.0"},
+                {"name": "keywords", "content": "台灣大學, 校級, 交換, 統計, 人數"}]
+)
 app.title = "NTU exchange stats"
 server = app.server
+
 # ------------------------------------------------------------------------------
 # Import and clean data (importing csv into pandas)
 df = pd.read_csv("./data/ntu_exchange.csv")
@@ -20,54 +26,51 @@ faculties_option = [{"label": faculty, "value": faculty} for faculty in facultie
 departments = df["學系"].unique()
 departments_option = [{"label": dept, "value": dept} for dept in departments]
 
-# print(df[:5])
 # ------------------------------------------------------------------------------
 # App layout
-app.layout = html.Div([
-    html.H1("台大校級交換人數 NTU Outbound Exchange", style={'text-align': 'center'}),
-    html.Div(
-        children=[
-            dcc.RangeSlider(id="slct_year",
-                            min=years[-1],
-                            max=years[0],
-                            step=1,
-                            marks={str(year): str(year) for year in years},
-                            value=[years[-1], years[0]]
+app.layout = html.Div(
+    className="page",
+    children= [
+        html.H1("台大校級交換人數", style={'text-align': 'center'}),
+        html.Div(
+            children=[
+                dcc.RangeSlider(id="slct_year",
+                                min=years[-1],
+                                max=years[0],
+                                step=1,
+                                marks={str(year): str(year) for year in years},
+                                value=[years[-1], years[0]]
+                                )
+            ],
+            style={"width": "60%", "margin": "auto", "align-items": "center", "justify-content": "center"},
+        ),
+        html.Div(
+            children=[
+                dcc.Dropdown(id="slct_department",
+                            options=departments_option,
+                            multi=False,
+                            value="經濟學系",
                             )
-        ],
-        style={"width": "60%", "margin": "auto", "align-items": "center", "justify-content": "center"},
-    ),
-    html.Div(
-        children=[
-            dcc.Dropdown(id="slct_department",
-                        options=departments_option,
-                        multi=False,
-                        value="經濟學系",
-                        )
-        ],
-        style={"width": "30%", "margin": "auto", "align-items": "center", "justify-content": "center"},
-    ),
-    html.Section (
-        id="container",
-        children=[
-            html.Section(
-                id="sum-stat-pane",
-                className="pane",
-                children=[
-                    html.Div(className="sum_stat", children=[html.H1(id='one_sem_pct'), html.P("% 的學生交換一學期")]),
-                    html.Div(className="sum_stat", children=[html.H1(id='num_students'), html.P("個學生參加交換")]),
-                    html.Div(className="sum_stat", children=[html.H1(id='num_countries'), html.P("個國家")]),
-                    html.Div(className="sum_stat", children=[html.H1(id='num_schools'), html.P("個學校")]),
-                    # html.Div(className="sum_stat", id='num_students', children=[]),
-                    # html.Div(className="sum_stat", id='num_countries', children=[]),
-                    # html.Div(className="sum_stat", id='num_schools', children=[]),
-                ]
-            ),
-            html.Div(className="pane", children=dcc.Graph(id='hist_year', figure={})),
-            html.Div(className="pane", children=dcc.Graph(id='hist_country', figure={})),
-            html.Div(className="pane", children=dcc.Graph(id='hist_school', figure={})),
-        ]
-    )
+            ],
+            style={"width": "30%", "margin": "auto", "align-items": "center", "justify-content": "center"},
+        ),
+        html.Div(
+            className="pane-grid",
+            children=[
+                html.Div(
+                    className="pane stats-grid",
+                    children=[
+                        html.Div(className="stats-card", children=[html.H1(id='one_sem_pct'), html.P("% 的學生交換一學期")]),
+                        html.Div(className="stats-card", children=[html.H1(id='num_students'), html.P("個學生參加交換")]),
+                        html.Div(className="stats-card", children=[html.H1(id='num_countries'), html.P("個國家")]),
+                        html.Div(className="stats-card", children=[html.H1(id='num_schools'), html.P("個學校")]),
+                    ]
+                ),
+                html.Div(className="pane", children=dcc.Graph(style={'height': '250px', 'width': '600px'}, id='hist_year', figure={}, responsive=True)),
+                html.Div(className="pane", children=dcc.Graph(style={'height': '250px', 'width': '600px'}, id='hist_country', figure={}, responsive=True)),
+                html.Div(className="pane", children=dcc.Graph(style={'height': '250px', 'width': '600px'}, id='hist_school', figure={}, responsive=True)),
+            ]
+        )
 ])
 # ------------------------------------------------------------------------------
 # Connect the Plotly graphs with Dash Components
@@ -105,6 +108,6 @@ def update_graph(slct_year, slct_department):
     fig_school.update_xaxes(tickangle=315, categoryorder="total descending")
 
     return one_sem_pct, num_students, num_countries, num_schools, fig_year, fig_country, fig_school
-# ------------------------------------------------------------------------------
+
 if __name__ == '__main__':
     app.run_server(debug=True)
