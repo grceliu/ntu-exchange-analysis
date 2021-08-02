@@ -4,6 +4,12 @@
   --pane-height: 250px;
 }
 
+@media (max-width: 600px) {
+  :root {
+    --pane-width: 80vw;
+  }
+}
+
 body{
   font-family: Verdana ;
 }
