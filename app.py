@@ -8,13 +8,21 @@ from dash.dependencies import Input, Output
 
 app = dash.Dash(
     __name__,
-    meta_tags=[{"name": "viewport", "content": "width=device-width, initial-scale=1.0"},
+    meta_tags=[{"name": "viewport", "content": "width=device-width, initial-scale=1.0, maximum-scale=1.2, minimum-scale=0.5,"},
                 {"name": "keywords", "content": "台灣大學, 校級, 交換, 統計, 人數"}]
 )
 app.title = "NTU exchange stats"
 server = app.server
 
 MAIN_COLOR = '#256ae5'
+DEFAULT_GRAPH_STYLE = {
+                       'height': '100%',
+                       'width': '100%',
+                       'max-height': '250px',
+                       'max-width': '600px'
+                      }
+DEFAULT_GRAPH_MARGIN = dict(l=20, r=20, t=35, b=10)
+DEFAULT_GRAPH_TITLE_POSITION = dict(x=0.5, y=0.95)
 
 # ------------------------------------------------------------------------------
 # Import and clean data (importing csv into pandas)
@@ -36,6 +44,7 @@ app.layout = html.Div(
     children= [
         html.H1("台大校級交換人數", style={'text-align': 'center'}),
         html.Div(
+            className="range-slider",
             children=[
                 dcc.RangeSlider(id="slct_year",
                                 min=years[-1],
@@ -45,9 +54,9 @@ app.layout = html.Div(
                                 value=[years[-1], years[0]]
                                 )
             ],
-            style={"width": "60%", "margin": "auto", "align-items": "center", "justify-content": "center"},
         ),
         html.Div(
+            className="department-dropdown",
             children=[
                 dcc.Dropdown(id="slct_department",
                             options=departments_option,
@@ -55,7 +64,6 @@ app.layout = html.Div(
                             value="經濟學系",
                             )
             ],
-            style={"width": "30%", "margin": "auto", "align-items": "center", "justify-content": "center"},
         ),
         html.Div(
             className="pane-grid",
@@ -69,9 +77,36 @@ app.layout = html.Div(
                         html.Div(className="stats-card", children=[html.H1(id='num_schools'), html.P("個學校")]),
                     ]
                 ),
-                html.Div(className="pane", children=dcc.Graph(style={'height': '100%', 'width': '100%', 'max-height': '250px', 'max-width': '600px'}, id='hist_year', figure={}, responsive=True, config={'displayModeBar': False})),
-                html.Div(className="pane", children=dcc.Graph(style={'height': '100%', 'width': '100%', 'max-height': '250px', 'max-width': '600px'}, id='hist_country', figure={}, responsive=True, config={'displayModeBar': False})),
-                html.Div(className="pane", children=dcc.Graph(style={'height': '100%', 'width': '100%', 'max-height': '250px', 'max-width': '600px'}, id='hist_school', figure={}, responsive=True, config={'displayModeBar': False})),
+                html.Div(
+                    className="pane",
+                    children=dcc.Graph(
+                                    style=DEFAULT_GRAPH_STYLE,
+                                    id='hist_year',
+                                    figure={},
+                                    responsive=True,
+                                    config={'displayModeBar': False}
+                                )
+                ),
+                html.Div(
+                    className="pane",
+                    children=dcc.Graph(
+                                    style=DEFAULT_GRAPH_STYLE,
+                                    id='hist_country',
+                                    figure={},
+                                    responsive=True,
+                                    config={'displayModeBar': False}
+                                )
+                ),
+                html.Div(
+                    className="pane",
+                    children=dcc.Graph(
+                                    style=DEFAULT_GRAPH_STYLE,
+                                    id='hist_school',
+                                    figure={},
+                                    responsive=True,
+                                    config={'displayModeBar': False}
+                                )
+                ),
             ]
         )
 ])
@@ -100,17 +135,17 @@ def update_graph(slct_year, slct_department):
     num_schools = dff['學校'].nunique()
 
     fig_year = px.histogram(dff, x="學年", title="{}歷年交換人數".format(slct_department), color_discrete_sequence=[MAIN_COLOR])
-    fig_year.update_layout(title_x=0.5, title_y=0.95, margin_l=20, margin_r=20, margin_t=35, margin_b=10)
+    fig_year.update_layout(title=DEFAULT_GRAPH_TITLE_POSITION, margin=DEFAULT_GRAPH_MARGIN)
     fig_year.update_xaxes(fixedrange=True)
     fig_year.update_yaxes(fixedrange=True)
 
     fig_country = px.histogram(dff, x='國家', title="{}學生前往交換國家".format(slct_department), color_discrete_sequence=[MAIN_COLOR])
-    fig_country.update_layout(title_x=0.5, title_y=0.95, margin_l=20, margin_r=20, margin_t=35, margin_b=10)
+    fig_country.update_layout(title=DEFAULT_GRAPH_TITLE_POSITION, margin=DEFAULT_GRAPH_MARGIN)
     fig_country.update_xaxes(tickangle=315, categoryorder="total descending", fixedrange=True)
     fig_country.update_yaxes(fixedrange=True)
 
     fig_school = px.histogram(dff, x='學校', title="{}學生前往交換學校".format(slct_department), color_discrete_sequence=[MAIN_COLOR])
-    fig_school.update_layout(title_x=0.5, title_y=0.95, margin_l=20, margin_r=20, margin_t=35, margin_b=10)
+    fig_school.update_layout(title=DEFAULT_GRAPH_TITLE_POSITION, margin=DEFAULT_GRAPH_MARGIN)
     fig_school.update_xaxes(tickangle=315, categoryorder="total descending", fixedrange=True)
     fig_school.update_yaxes(fixedrange=True)
 

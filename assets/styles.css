@@ -1,6 +1,7 @@
 :root {
   --main-color: #256ae5;
   --pane-width: 600px;
+  --pane-height: 250px;
 }
 
 body{
@@ -11,9 +12,25 @@ p {
   font-size: .8rem;
 }
 
+.range-slider {
+  width: 100%;
+  max-width: 700px;
+  margin: auto;
+  align-items: center;
+  justify-content: center
+}
+
+.department-dropdown {
+  width: 80%;
+  max-width: 500px;
+  margin: auto;
+  align-items: center;
+  justify-content: center
+}
+
 .pane{
-  height: 250px;
-  width: 600px;
+  height: var(--pane-height);
+  width: var(--pane-width);
   padding: 10px;
   justify-content: center;
 }
@@ -34,8 +51,6 @@ p {
 }
 
 .stats-grid {
-    height: 250px;
-    width: 600px;
     display: grid;
     justify-content: center;
     gap: 1rem 1rem;
