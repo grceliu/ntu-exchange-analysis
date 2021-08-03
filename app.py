@@ -50,7 +50,7 @@ app.layout = html.Div(
                                 min=years[-1],
                                 max=years[0],
                                 step=1,
-                                marks={str(year): str(year) for year in years},
+                                marks={str(year): str(year) for year in years if year%2==0 or year==years.min() or year==years.max()},
                                 value=[years[-1], years[0]]
                                 )
             ],
@@ -71,8 +71,8 @@ app.layout = html.Div(
                 html.Div(
                     className="pane stats-grid",
                     children=[
-                        html.Div(className="stats-card", children=[html.H1(id='one_sem_pct'), html.P("% 的學生交換一學期")]),
                         html.Div(className="stats-card", children=[html.H1(id='num_students'), html.P("個學生參加交換")]),
+                        html.Div(className="stats-card", children=[html.H1(id='one_sem_pct'), html.P("% 交換生交換一學期")]),
                         html.Div(className="stats-card", children=[html.H1(id='num_countries'), html.P("個國家")]),
                         html.Div(className="stats-card", children=[html.H1(id='num_schools'), html.P("個學校")]),
                     ]
@@ -129,25 +129,29 @@ def update_graph(slct_year, slct_department):
     dff = df.copy()
     dff = dff[(dff["學年"]>=slct_year[0]) & (dff["學年"]<=slct_year[1]) & (dff["學系"]==slct_department)]
 
-    one_sem_pct = int(round((len(dff[dff["學期"]=="一學期"]) / len(dff))*100))
+    if len(dff) > 0:
+        one_sem_pct = int(round((len(dff[dff["學期"]=="一學期"]) / len(dff))*100))
+    else:
+        one_sem_pct = 0
+
     num_students = len(dff)
     num_countries = dff["國家"].nunique()
     num_schools = dff['學校'].nunique()
 
-    fig_year = px.histogram(dff, x="學年", title="{}歷年交換人數".format(slct_department), color_discrete_sequence=[MAIN_COLOR])
-    fig_year.update_layout(title=DEFAULT_GRAPH_TITLE_POSITION, margin=DEFAULT_GRAPH_MARGIN)
+    fig_year = px.histogram(dff, x="學年", title="{}歷年交換人數".format(slct_department), color_discrete_sequence=[MAIN_COLOR], nbins=len(years))
+    fig_year.update_layout(bargap=0.2, title=DEFAULT_GRAPH_TITLE_POSITION, margin=DEFAULT_GRAPH_MARGIN)
     fig_year.update_xaxes(fixedrange=True)
-    fig_year.update_yaxes(fixedrange=True)
+    fig_year.update_yaxes(title="人數", fixedrange=True)
 
     fig_country = px.histogram(dff, x='國家', title="{}學生前往交換國家".format(slct_department), color_discrete_sequence=[MAIN_COLOR])
     fig_country.update_layout(title=DEFAULT_GRAPH_TITLE_POSITION, margin=DEFAULT_GRAPH_MARGIN)
     fig_country.update_xaxes(tickangle=315, categoryorder="total descending", fixedrange=True)
-    fig_country.update_yaxes(fixedrange=True)
+    fig_country.update_yaxes(title="人數", fixedrange=True)
 
     fig_school = px.histogram(dff, x='學校', title="{}學生前往交換學校".format(slct_department), color_discrete_sequence=[MAIN_COLOR])
     fig_school.update_layout(title=DEFAULT_GRAPH_TITLE_POSITION, margin=DEFAULT_GRAPH_MARGIN)
     fig_school.update_xaxes(tickangle=315, categoryorder="total descending", fixedrange=True)
-    fig_school.update_yaxes(fixedrange=True)
+    fig_school.update_yaxes(title="人數", fixedrange=True)
 
     return one_sem_pct, num_students, num_countries, num_schools, fig_year, fig_country, fig_school
 
