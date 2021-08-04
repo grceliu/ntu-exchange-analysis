@@ -127,7 +127,11 @@ app.layout = html.Div(
 def update_graph(slct_year, slct_department):
     # dataframe
     dff = df.copy()
-    dff = dff[(dff["學年"]>=slct_year[0]) & (dff["學年"]<=slct_year[1]) & (dff["學系"]==slct_department)]
+    if not slct_department:
+        slct_department = ''
+        dff = dff[(dff["學年"]>=slct_year[0]) & (dff["學年"]<=slct_year[1])]
+    else:
+        dff = dff[(dff["學年"]>=slct_year[0]) & (dff["學年"]<=slct_year[1]) & (dff["學系"]==slct_department)]
 
     if len(dff) > 0:
         one_sem_pct = int(round((len(dff[dff["學期"]=="一學期"]) / len(dff))*100))
