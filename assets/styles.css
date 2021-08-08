@@ -18,6 +18,11 @@ p {
   font-size: .8rem;
 }
 
+footer {
+  margin: 0 auto;
+  text-align: center;
+} 
+
 .range-slider {
   width: 100%;
   max-width: 700px;

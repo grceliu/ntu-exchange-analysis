@@ -108,6 +108,28 @@ app.layout = html.Div(
                                 )
                 ),
             ]
+        ),
+        html.Footer(
+            children=[
+                html.Span(
+                    "Project Link: "
+                ),
+                html.A(
+                    className='footer-item',
+                    href='https://github.com/grceliu/ntu-exchange-analysis',
+                    target='_blank',
+                    children=[
+                        html.Img(
+                            src='assets/GitHub-Mark-120px-plus.png',
+                            height='15',
+                            width='15',
+                        ),
+                    ]
+                ),
+                html.Span(
+                    "  | © 2021 Grace Liu",
+                ),
+            ]
         )
 ])
 # ------------------------------------------------------------------------------
