@@ -1,5 +1,5 @@
 # NTU Excahnge Analysis
-![screenshot](screenshot/app.png)
+[![screenshot](screenshot/app.png)](https://ntu-exchange-analysis.herokuapp.com/)
 
 This is a [Dash](https://plotly.com/dash/) app visualizing the statisitcs of outbound exchange program at [National Taiwan University (NTU)](https://www.ntu.edu.tw/index.html).
 
